@@ -17,13 +17,27 @@ def enter_club(message):
 
     bot.send_message(message.from_user.id, texts.choose_option, reply_markup=markup)  # ответ бота
 
-    print(f"Ваш клуб -- {message.text}")
+    print(f"Выбранный клуб: {message.text}")
+
+
+@bot.message_handler(content_types=['text'])
+def enter_race_data(message):
+    bot.send_message(message.from_user.id, texts.enter_race_data)
+
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)  # создание новых кнопок
+    for club in CLUBS:
+        markup.add(types.KeyboardButton(club))
+
+    bot.send_message(message.from_user.id, texts.choose_option, reply_markup=markup)  # ответ бота
+
+    print(f"Выбранный клуб: {message.text}")
 
 
 @bot.message_handler(content_types=['text'])
 def add_race_info(message):
     enter_club(message)
 
+    enter_race_data()
 
 
 @bot.message_handler(commands=['start'])
