@@ -20,43 +20,53 @@ def enter_club(message):
         markup.add(types.KeyboardButton(club))
 
 
-def enter_team1(message, race):
+def enter_team1(message):
     user_id = message.from_user.id
     user_states[user_id].entering_race_info = False
     user_states[user_id].entering_team1 = True
 
-    team1 = message.text
-    race.team1 = team1
+    user_states[user_id].race.team1 = message.text
 
     bot.send_message(message.from_user.id, texts.enter_race_team2)
 
 
 
-def enter_team2(message, race):
+def enter_team2(message):
     user_id = message.from_user.id
     user_states[user_id].entering_team1 = False
     user_states[user_id].entering_team2 = True
 
-    team2 = message.text
-    race.team2 = team2
-
-
-def enter_overtakes(message, race):
-    user_id = message.from_user.id
-    user_states[user_id].entering_overtakes = True
-    user_states[user_id].entering_teams = False
+    user_states[user_id].race.team2 = message.text
 
     bot.send_message(message.from_user.id, texts.enter_race_overtakes1)
-    overtakes_team1 = int(message.text)
+
+
+
+
+def enter_overtakes1(message):
+    user_id = message.from_user.id
+    user_states[user_id].entering_team2 = False
+    user_states[user_id].entering_overtakes1 = True
+
+    user_states[user_id].race.overtakes_team1 = int(message.text)
 
     bot.send_message(message.from_user.id, texts.enter_race_overtakes2)
-    overtakes_team2 = int(message.text)
-
-    race.overtakes_team1 = overtakes_team1
-    race.overtakes_team2 = overtakes_team2
 
 
-def enter_laps(message, race):
+
+def enter_overtakes2(message):
+    user_id = message.from_user.id
+    user_states[user_id].entering_overtakes1 = False
+    user_states[user_id].entering_overtakes2 = True
+
+    user_states[user_id].race.overtakes_team2 = int(message.text)
+
+    bot.send_message(message.from_user.id, texts.enter_laps)
+
+
+
+
+def enter_laps(message):
     pass
 
 
@@ -81,34 +91,31 @@ def handle_messages(message):
         markup.add(btn1)
         bot.send_message(user_id, texts.choose_option, reply_markup=markup)
 
-    elif user_id in user_states:
-        state = user_states[user_id]
-        state.print_info()
-
-        race = Race("team1", "team2")
-
-        if state.entering_race_info:
-            enter_team1(message, race)
-
-        elif state.entering_team1:
-            enter_team2(message, race)
-            race.print_info()
-
-        elif state.entering_team2:
-            enter_overtakes(message, race)
-            race.print_info()
-
-
-        elif state.entering_overtakes:
-            enter_laps(message, race)
-            race.print_info()
-
-
-    elif message.text == texts.add_race_info:
+    elif message.text == texts.add_race_info or message.text == 'add':
         user_states[user_id] = UserState()
         user_states[user_id].entering_race_info = True
+
         bot.send_message(user_id, texts.enter_race)
         bot.send_message(message.from_user.id, texts.enter_race_team1)
+
+    elif user_id in user_states:
+        state = user_states[user_id]
+
+        if state.entering_race_info:
+            enter_team1(message)
+
+        elif state.entering_team1:
+            enter_team2(message)
+
+        elif state.entering_team2:
+            enter_overtakes1(message)
+
+        elif state.entering_overtakes1:
+            enter_overtakes2(message)
+
+        elif state.entering_overtakes2:
+            enter_laps(message)
+            user_states[user_id].race.print_info()
 
 
 bot.infinity_polling()  # обязательная для работы бота часть

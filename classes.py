@@ -3,13 +3,16 @@ class UserState:
         self.entering_race_info = False
         self.entering_team1 = False
         self.entering_team2 = False
-        self.entering_overtakes = False
+        self.entering_overtakes1 = False
+        self.entering_overtakes2 = False
+        self.race = Race(None, None, None, None)
 
     def print_info(self):
         print(f"entering_race_info = {self.entering_race_info}")
         print(f"entering_team1 = {self.entering_team1}")
         print(f"entering_team2 = {self.entering_team2}")
-        print(f"entering_overtakes = {self.entering_overtakes}")
+        print(f"entering_overtakes1 = {self.entering_overtakes1}")
+        print(f"entering_overtakes2 = {self.entering_overtakes2}")
 
 
 class Lap:
@@ -21,13 +24,18 @@ class Lap:
 
 
 class Race:
-    def __init__(self, team1, team2):
+    team1 = None
+    team2 = None
+    scores = [0, 0]
+    overtakes_team1 = 0
+    overtakes_team2 = 0
+    laps = []
+
+    def __init__(self, team1, team2, overtakes_team1, overtakes_team2):
         self.team1 = team1
         self.team2 = team2
-        self.scores = [0, 0]
-        self.overtakes_team1 = 0
-        self.overtakes_team2 = 0
-        self.laps = []
+        self.overtakes_team1 = overtakes_team1
+        self.overtakes_team2 = overtakes_team2
 
     def add_lap(self, lap_data):
         lap = Lap(lap_data)
