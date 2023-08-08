@@ -1,8 +1,15 @@
 class UserState:
     def __init__(self):
-        self.entering_club = False
-        self.entering_teams = False
+        self.entering_race_info = False
+        self.entering_team1 = False
+        self.entering_team2 = False
         self.entering_overtakes = False
+
+    def print_info(self):
+        print(f"entering_race_info = {self.entering_race_info}")
+        print(f"entering_team1 = {self.entering_team1}")
+        print(f"entering_team2 = {self.entering_team2}")
+        print(f"entering_overtakes = {self.entering_overtakes}")
 
 
 class Lap:

@@ -10,31 +10,34 @@ bot = telebot.TeleBot(TOKEN)
 user_states = {}  # Словарь для хранения состояний пользователей
 
 
-
 def enter_club(message):
     user_id = message.from_user.id
-    user_states[user_id].entering_club = True
+    user_states[user_id].entering_race_info = True
     bot.send_message(user_id, texts.enter_club_name)
 
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     for club in CLUBS:
         markup.add(types.KeyboardButton(club))
 
-    bot.send_message(user_id, texts.choose_option, reply_markup=markup)
 
-
-def enter_teams(message, race):
+def enter_team1(message, race):
     user_id = message.from_user.id
-    user_states[user_id].entering_teams = True
-    user_states[user_id].entering_club = False
+    user_states[user_id].entering_race_info = False
+    user_states[user_id].entering_team1 = True
 
-    bot.send_message(message.from_user.id, texts.enter_race_team1)
     team1 = message.text
+    race.team1 = team1
 
     bot.send_message(message.from_user.id, texts.enter_race_team2)
-    team2 = message.text
 
-    race.team1 = team1
+
+
+def enter_team2(message, race):
+    user_id = message.from_user.id
+    user_states[user_id].entering_team1 = False
+    user_states[user_id].entering_team2 = True
+
+    team2 = message.text
     race.team2 = team2
 
 
@@ -55,23 +58,6 @@ def enter_overtakes(message, race):
 
 def enter_laps(message, race):
     pass
-
-
-def enter_race_data(message):
-    bot.send_message(message.from_user.id, texts.enter_race)
-
-    race = Race("team1", "team2")
-    enter_teams(message, race)
-    race.print_info()
-    enter_overtakes(message, race)
-    race.print_info()
-    enter_laps(message, race)
-
-
-def add_race_info(message):
-    enter_club(message)
-
-    enter_race_data(message)
 
 
 @bot.message_handler(commands=['start'])
@@ -95,19 +81,34 @@ def handle_messages(message):
         markup.add(btn1)
         bot.send_message(user_id, texts.choose_option, reply_markup=markup)
 
-    elif message.text == texts.add_race_info:
-        user_states[user_id] = UserState()
-        enter_club(message)
-
     elif user_id in user_states:
         state = user_states[user_id]
+        state.print_info()
 
-        if state.entering_club:
-            enter_teams(message, state)
-        elif state.entering_teams:
-            enter_overtakes(message, state)
+        race = Race("team1", "team2")
+
+        if state.entering_race_info:
+            enter_team1(message, race)
+
+        elif state.entering_team1:
+            enter_team2(message, race)
+            race.print_info()
+
+        elif state.entering_team2:
+            enter_overtakes(message, race)
+            race.print_info()
+
+
         elif state.entering_overtakes:
-            enter_laps(message, state)
+            enter_laps(message, race)
+            race.print_info()
+
+
+    elif message.text == texts.add_race_info:
+        user_states[user_id] = UserState()
+        user_states[user_id].entering_race_info = True
+        bot.send_message(user_id, texts.enter_race)
+        bot.send_message(message.from_user.id, texts.enter_race_team1)
 
 
 bot.infinity_polling()  # обязательная для работы бота часть
