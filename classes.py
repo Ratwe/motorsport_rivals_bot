@@ -46,20 +46,26 @@ class Race:
     def calculate_score(self):
         for lap in self.laps:
             if lap.speed_team1 > lap.speed_team2:
-                self.scores[0] += 1
+                self.scores[0] += lap.best_lap
             elif lap.speed_team2 > lap.speed_team1:
-                self.scores[1] += 1
+                self.scores[1] += lap.best_lap
 
-    def print_info(self):
-        print(f"team1 = {self.team1}")
-        print(f"team2 = {self.team2}")
-        print(f"overtakes_team1 = {self.overtakes_team1}")
-        print(f"overtakes_team2 = {self.overtakes_team2}")
-        print(f"scores = {self.scores[0]} : {self.scores[1]}")
+    def get_info_as_text(self):
+        info = "Информация о гонке:\n\n"
+        info += f"team1 = {self.team1}\n"
+        info += f"team2 = {self.team2}\n"
+        info += f"overtakes_team1 = {self.overtakes_team1}\n"
+        info += f"overtakes_team2 = {self.overtakes_team2}\n"
+        info += f"scores = {self.scores[0]} : {self.scores[1]}\n"
 
         for lap in self.laps:
-            print(f"lap #{lap.number}: ")
-            print(f"speed_team1 = {lap.speed_team1}")
-            print(f"speed_team2 = {lap.speed_team2}")
-            print(f"best_lap = {lap.best_lap}\n")
+            info += f"lap #{lap.number}:\n"
+            info += f"speed_team1 = {lap.speed_team1}\n"
+            info += f"speed_team2 = {lap.speed_team2}\n"
+            info += f"best_lap = {lap.best_lap}\n\n"
+
+        return info
+
+    def print_info(self):
+        print(self.get_info_as_text())
 
