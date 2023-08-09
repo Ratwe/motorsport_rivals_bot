@@ -1,20 +1,9 @@
 from telebot import types
 
 import texts
-from checkouts import check_overtakes, check_values
-from config import CLUBS
-from errors import LAST_LAP
 from globals import user_states, bot
-
-
-def enter_club(message):
-    user_id = message.from_user.id
-    user_states[user_id].entering_race_info = True
-    bot.send_message(user_id, texts.enter_club_name)
-
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    for club in CLUBS:
-        markup.add(types.KeyboardButton(club))
+from validation.checkouts import check_overtakes, check_values
+from validation.errors import LAST_LAP
 
 
 def enter_team1(message):
@@ -35,9 +24,6 @@ def enter_team2(message):
     user_states[user_id].race.team2 = message.text
 
     bot.send_message(message.from_user.id, texts.enter_race_overtakes1)
-
-
-
 
 
 def enter_overtakes1(message):
@@ -66,8 +52,6 @@ def enter_overtakes2(message):
     bot.send_message(message.from_user.id, texts.enter_laps)
     bot.send_message(user_id, texts.enter_laps_template, parse_mode='Markdown')
     bot.send_message(user_id, texts.enter_laps_example, parse_mode='Markdown')
-
-
 
 
 def enter_laps(message):

@@ -1,11 +1,11 @@
-from errors import *
+from validation.errors import *
 
 
 def check_overtakes(text):
     try:
         int(text)
     except:
-        return OVERTAKE_TYPE_ERR
+        return CONV_ERR
 
     return EXIT_SUCCESS
 

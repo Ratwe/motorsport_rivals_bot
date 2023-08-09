@@ -1,8 +1,7 @@
-import collecting
-from classes import UserState
-
-from entering_info import *
+from classes.user_state import UserState
 from globals import bot
+from info_collectors.entering_info import *
+from info_collectors.saving_info import save_to_json
 
 
 @bot.message_handler(commands=['start'])
@@ -52,11 +51,15 @@ def handle_messages(message):
             enter_laps(message)
 
         elif state.printing_info:
+            state.race.calculate_race_id()
+            state.race.calculate_score()
+            state.race.calculate_speed()
+
             if message.text == texts.yes:
                 race_info = state.race.get_info_as_text()
                 bot.send_message(user_id, race_info)
 
-            collecting.save_to_json(state)
+            save_to_json(state)
 
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
             btn = types.KeyboardButton(texts.begin)
