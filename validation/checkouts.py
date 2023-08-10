@@ -1,4 +1,19 @@
+import json
+
+from config import RACE_DATA_FILENAME
 from validation.errors import *
+
+
+def race_exists(race_id):
+    try:
+        with open(RACE_DATA_FILENAME, "r") as json_file:
+            data = json.load(json_file)
+            for race in data:
+                if race["race_id"] == race_id:
+                    return True
+            return False
+    except FileNotFoundError:
+        return False
 
 
 def check_overtakes(text):

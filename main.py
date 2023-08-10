@@ -1,7 +1,7 @@
 from classes.user_state import UserState
-from globals import bot
 from info_collectors.entering_info import *
 from info_collectors.saving_info import save_to_json
+from validation.checkouts import race_exists
 
 
 @bot.message_handler(commands=['start'])
@@ -50,14 +50,21 @@ def handle_messages(message):
         elif state.entering_overtakes2 or state.entering_laps:
             enter_laps(message)
 
+
+
         elif state.printing_info:
-            state.race.calculate_race_id()
-            state.race.calculate_score()
             state.race.calculate_speed()
+            state.race.calculate_score()
+            state.race.calculate_race_id()
 
             if message.text == texts.yes:
                 race_info = state.race.get_info_as_text()
                 bot.send_message(user_id, race_info)
+
+            if race_exists(state.race.race_id):
+                bot.send_message(user_id, texts.race_exists)
+                state.printing_info = False
+                return
 
             save_to_json(state)
 

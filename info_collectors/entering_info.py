@@ -53,6 +53,13 @@ def enter_overtakes2(message):
     bot.send_message(user_id, texts.enter_laps_template, parse_mode='Markdown')
     bot.send_message(user_id, texts.enter_laps_example, parse_mode='Markdown')
 
+    example_images = [types.InputMediaPhoto('https://github.com/Ratwe/motorsport_rivals_bot/blob/master/images/enter_laps_template1.jpg?raw=true',
+                                            caption=texts.example_images_caption),
+                      types.InputMediaPhoto('https://github.com/Ratwe/motorsport_rivals_bot/blob/master/images/enter_laps_template2.jpg?raw=true'),
+                      types.InputMediaPhoto('https://github.com/Ratwe/motorsport_rivals_bot/blob/master/images/enter_laps_template3.jpg?raw=true')]
+
+    bot.send_media_group(user_id, example_images)
+
 
 def enter_laps(message):
     user_id = message.from_user.id

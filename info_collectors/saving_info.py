@@ -1,7 +1,9 @@
 import json
 
+from config import RACE_DATA_FILENAME
 
-def save_to_json(state):
+
+def get_race_data(state):
     race = state.race
 
     race_data = {
@@ -25,5 +27,14 @@ def save_to_json(state):
         }
         race_data["laps"].append(lap_data)
 
-    with open("race_data.json", "w") as json_file:
-        json.dump(race_data, json_file)
+    return race_data
+
+
+def save_to_json(state):
+    with open(RACE_DATA_FILENAME, "r") as json_file:
+        all_data = json.load(json_file)
+
+    all_data.append(get_race_data(state))
+
+    with open(RACE_DATA_FILENAME, "w") as json_file:
+        json.dump(all_data, json_file, indent=4)

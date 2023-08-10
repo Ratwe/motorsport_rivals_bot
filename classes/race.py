@@ -56,7 +56,7 @@ class Race:
         info += f"team2 = {self.team2}\n"
         info += f"overtakes_team1 = {self.overtakes_team1}\n"
         info += f"overtakes_team2 = {self.overtakes_team2}\n"
-        info += f"scores = {self.scores[0]} : {self.scores[1]}\n"
+        info += f"scores = {self.scores[0]} : {self.scores[1]}\n\n"
 
         for lap in self.laps:
             info += f"lap #{lap.number}:\n"
