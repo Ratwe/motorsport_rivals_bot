@@ -3,7 +3,7 @@ from telebot import types
 import texts
 from globals import user_states, bot
 from validation.checkouts import check_overtakes, check_values
-from validation.errors import LAST_LAP
+from validation.errors import LAST_LAP, process_err_code
 
 
 def enter_team1(message):
@@ -82,6 +82,7 @@ def enter_laps(message):
         bot.send_message(user_id, texts.ask_print_race_info, reply_markup=markup)
 
     elif err_code:
+        process_err_code(err_code)
         state.entering_laps = False
         return
 
