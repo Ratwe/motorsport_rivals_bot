@@ -1,15 +1,10 @@
-FROM python:3.11 AS builder
-COPY requirements.txt .
+FROM python:3.11
 
-RUN pip install --no-cache-dir -r requirements.txt
+COPY . /app
+WORKDIR /app
 
+RUN pip install -r requirements.txt
 
-FROM python:3.11-slim
-WORKDIR /code
+ENV PYTHONPATH "${PYTHONPATH}:/app"
 
-COPY ./src .
- 
-ENV PATH=/root/.local:$PATH
-
-CMD [ "python", "-u", "./main.py" ]
-
+CMD [ "python", "-u", "./src/main.py" ]
