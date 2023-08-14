@@ -25,11 +25,15 @@ def check_overtakes(text):
     return EXIT_SUCCESS
 
 
-def check_lap_nums():
-    pass
+def check_lap_num(num, laps):
+    for lap in laps:
+        if lap.number == num:
+            return LAP_DUPLICATE_ERR
+
+    return EXIT_SUCCESS
 
 
-def check_values(values):
+def check_values(values, laps):
     if len(values) != 4:
         return VALUES_LEN_ERR
 
@@ -51,7 +55,19 @@ def check_values(values):
     if values[1] * values[2] <= 0:
         return SPEED_VAL_ERR
 
-    if check_lap_nums():
+    if check_lap_num(values[0], laps):
         return LAP_DUPLICATE_ERR
+
+    return EXIT_SUCCESS
+
+
+def check_count(num):
+    try:
+        num = int(num)
+    except:
+        return CONV_ERR
+
+    if num <= 0:
+        return RACES_NUM_ERR
 
     return EXIT_SUCCESS

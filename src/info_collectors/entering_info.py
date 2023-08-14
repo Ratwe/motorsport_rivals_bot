@@ -1,8 +1,9 @@
 from telebot import types
 
 import texts
+from calculations.stats import calc_average_stats
 from globals import user_states, bot
-from validation.checkouts import check_overtakes, check_values
+from validation.checkouts import check_overtakes, check_values, check_count
 from validation.errors import LAST_LAP, get_err_code_message
 
 
@@ -75,7 +76,7 @@ def enter_laps(message):
     state.entering_laps = True
 
     values = message.text.split()
-    err_code = check_values(values)
+    err_code = check_values(values, state.race.laps)
 
     if err_code == LAST_LAP:
         state.entering_laps = False
@@ -99,5 +100,26 @@ def enter_laps(message):
         'best_lap': bool(values[3])
     }
 
-    print(f"adding lap #{values[0]}")
     state.race.add_lap(lap_data)
+
+
+def get_average_stats(message):
+    user_id = message.from_user.id
+    state = user_states[user_id]
+
+    err_code = check_count(message.text)
+    if err_code:
+        bot.send_message(user_id, get_err_code_message(err_code))
+        return
+
+    count = int(message.text)
+
+    state.getting_average_stats = False
+
+    stats = calc_average_stats(count)
+
+    return stats
+
+
+def print_average_stats(stats):
+    pass

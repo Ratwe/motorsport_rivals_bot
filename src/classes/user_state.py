@@ -10,6 +10,8 @@ class UserState:
         self.entering_overtakes2 = False
         self.race = Race(None, None, None, None)
         self.printing_info = False
+        self.getting_average_stats = False
+        self.printing_average_stats = False
 
     def print_info(self):
         print(f"entering_race_info = {self.entering_race_info}")
@@ -18,3 +20,5 @@ class UserState:
         print(f"entering_overtakes1 = {self.entering_overtakes1}")
         print(f"entering_overtakes2 = {self.entering_overtakes2}")
         print(f"printing_info = {self.printing_info}")
+        print(f"getting_average_stats = {self.getting_average_stats}")
+        print(f"printing_average_stats = {self.printing_average_stats}")
