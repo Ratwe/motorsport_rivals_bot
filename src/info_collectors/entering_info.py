@@ -8,20 +8,22 @@ from validation.errors import LAST_LAP, get_err_code_message
 
 def enter_team1(message):
     user_id = message.from_user.id
-    user_states[user_id].entering_race_info = False
-    user_states[user_id].entering_team1 = True
+    state = user_states[user_id]
+    state.entering_race_info = False
+    state.entering_team1 = True
 
-    user_states[user_id].race.team1 = message.text.lower()
+    state.race.team1 = message.text.lower()
 
     bot.send_message(message.from_user.id, texts.enter_race_team2)
 
 
 def enter_team2(message):
     user_id = message.from_user.id
-    user_states[user_id].entering_team1 = False
-    user_states[user_id].entering_team2 = True
+    state = user_states[user_id]
+    state.entering_team1 = False
+    state.entering_team2 = True
 
-    user_states[user_id].race.team2 = message.text.lower()
+    state.race.team2 = message.text.lower()
 
     bot.send_message(message.from_user.id, texts.enter_race_overtakes1)
 
@@ -31,10 +33,11 @@ def enter_overtakes1(message):
         return
 
     user_id = message.from_user.id
-    user_states[user_id].entering_team2 = False
-    user_states[user_id].entering_overtakes1 = True
+    state = user_states[user_id]
+    state.entering_team2 = False
+    state.entering_overtakes1 = True
 
-    user_states[user_id].race.overtakes_team1 = int(message.text)
+    state.race.overtakes_team1 = int(message.text)
 
     bot.send_message(message.from_user.id, texts.enter_race_overtakes2)
 
@@ -44,10 +47,11 @@ def enter_overtakes2(message):
         return
 
     user_id = message.from_user.id
-    user_states[user_id].entering_overtakes1 = False
-    user_states[user_id].entering_overtakes2 = True
+    state = user_states[user_id]
+    state.entering_overtakes1 = False
+    state.entering_overtakes2 = True
 
-    user_states[user_id].race.overtakes_team2 = int(message.text)
+    state.race.overtakes_team2 = int(message.text)
 
     bot.send_message(message.from_user.id, texts.enter_laps)
     bot.send_message(user_id, texts.enter_laps_template, parse_mode='Markdown')
@@ -64,7 +68,10 @@ def enter_overtakes2(message):
 def enter_laps(message):
     user_id = message.from_user.id
     state = user_states[user_id]
-    state.entering_overtakes2 = False
+    if state.entering_overtakes2:
+        state.race.laps = []
+        state.entering_overtakes2 = False
+
     state.entering_laps = True
 
     values = message.text.split()
@@ -92,4 +99,5 @@ def enter_laps(message):
         'best_lap': bool(values[3])
     }
 
+    print(f"adding lap #{values[0]}")
     state.race.add_lap(lap_data)

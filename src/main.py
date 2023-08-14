@@ -51,8 +51,6 @@ def handle_messages(message):
         elif state.entering_overtakes2 or state.entering_laps:
             enter_laps(message)
 
-
-
         elif state.printing_info:
             state.race.calculate_speed()
             state.race.calculate_score()
