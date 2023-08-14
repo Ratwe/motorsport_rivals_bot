@@ -1,4 +1,4 @@
-from classes.race import Race
+from src.classes.race import Race
 
 
 class UserState:
@@ -8,9 +8,11 @@ class UserState:
         self.entering_team2 = False
         self.entering_overtakes1 = False
         self.entering_overtakes2 = False
+        self.entering_laps = False
         self.race = Race(None, None, None, None)
         self.printing_info = False
         self.getting_average_stats = False
+        self.getting_races_data = False
         self.printing_average_stats = False
 
     def print_info(self):

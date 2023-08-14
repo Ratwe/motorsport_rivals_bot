@@ -1,8 +1,12 @@
+from telebot import types
+
 import texts
 from classes.user_state import UserState
-from info_collectors.entering_info import *
-from info_collectors.saving_info import save_to_json
 from globals import bot, user_states
+from src.info_collectors.enter_info import enter_team1, enter_team2, enter_overtakes1, enter_overtakes2, enter_laps
+from src.info_collectors.get_info import get_average_stats, get_races_data
+from src.json_tools import save_to_json
+from src.tests.tests import load_race_data_from_json_test
 from validation.checkouts import race_exists
 
 
@@ -19,12 +23,14 @@ def handle_messages(message):
     user_id = message.from_user.id
 
     print(f"message.text = {message.text}")
+    print(f"user_states = {user_states}")
 
     if message.text == texts.begin:
         user_states[user_id] = UserState()
+
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         btn1 = types.KeyboardButton(texts.add_race_info)
-        btn2 = types.KeyboardButton(texts.get_average_stats)
+        btn2 = types.KeyboardButton(texts.get_stats)
         markup.add(btn1, btn2)
         bot.send_message(user_id, texts.choose_option, reply_markup=markup)
 
@@ -35,11 +41,28 @@ def handle_messages(message):
         bot.send_message(user_id, texts.enter_race, reply_markup=None)
         bot.send_message(user_id, texts.enter_race_team1)
 
-    elif message.text == texts.get_average_stats or message.text == 'stat':
+    elif message.text == texts.get_stats or message.text == 'stats':
+        user_states[user_id] = UserState()
+
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        btn1 = types.KeyboardButton(texts.get_average_stats)
+        btn2 = types.KeyboardButton(texts.get_races_data)
+        markup.add(btn1, btn2)
+        bot.send_message(user_id, texts.choose_option, reply_markup=markup)
+
+    elif message.text == texts.get_average_stats or message.text == 'stat avg':
         user_states[user_id] = UserState()
         user_states[user_id].getting_average_stats = True
 
         bot.send_message(user_id, texts.enter_races_count, reply_markup=None)
+
+    elif message.text == texts.get_races_data or message.text == 'stat raw':
+        user_states[user_id] = UserState()
+        user_states[user_id].getting_races_data = True
+        print(f"user_states = {user_states}")
+
+        bot.send_message(user_id, texts.enter_races_count, reply_markup=None)
+
 
     elif user_id in user_states:
         state = user_states[user_id]
@@ -84,8 +107,13 @@ def handle_messages(message):
 
             state.printing_info = False
 
+        elif state.getting_races_data:
+            get_races_data(message)
+
         elif state.getting_average_stats:
             get_average_stats(message)
+
+
 
 
 

@@ -1,6 +1,7 @@
 import json
 
 from config import RACE_DATA_FILENAME
+from src.classes.race import Race
 
 
 def get_race_data(state):
@@ -38,3 +39,30 @@ def save_to_json(state):
 
     with open(RACE_DATA_FILENAME, "w") as json_file:
         json.dump(all_data, json_file, indent=4)
+
+
+def load_race_data_from_json(count=10):
+    race_list = []
+
+    with open(RACE_DATA_FILENAME, 'r') as json_file:
+        data = json.load(json_file)
+
+    for race_data in data:
+        team1 = race_data["team1"]
+        team2 = race_data["team2"]
+        overtakes_team1 = race_data["overtakes_team1"]
+        overtakes_team2 = race_data["overtakes_team2"]
+
+        race = Race(team1, team2, overtakes_team1, overtakes_team2)
+        race.race_id = race_data["race_id"]
+        race.speed_team1 = race_data["speed_team1"]
+        race.speed_team2 = race_data["speed_team2"]
+        race.scores = race_data["scores"]
+
+        race.laps = []
+        for lap_data in race_data["laps"]:
+            race.add_lap(lap_data)
+
+        race_list.append(race)
+
+    return race_list[-count:].reverse()  # возврат последних count гонок

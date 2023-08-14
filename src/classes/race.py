@@ -31,7 +31,7 @@ class Race:
         self.laps.append(lap)
 
     def calculate_score(self):
-        score = [0, 0]
+        self.scores = [0, 0]
         for lap in self.laps:
             if lap.speed_team1 > lap.speed_team2:
                 self.scores[0] += int(lap.best_lap)
