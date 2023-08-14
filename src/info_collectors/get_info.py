@@ -1,8 +1,8 @@
-from src.calculations.stats import calc_average_stats
-from src.globals import user_states, bot
-from src.json_tools import load_race_data_from_json
-from src.validation.checkouts import check_count
-from src.validation.errors import get_err_code_message
+from calculations.stats import calc_average_stats
+from globals import user_states, bot
+from json_tools import load_race_data_from_json
+from validation.checkouts import check_count
+from validation.errors import get_err_code_message
 
 
 def get_average_stats(message):
@@ -16,15 +16,14 @@ def get_average_stats(message):
 
     count = int(message.text)
 
-    state.getting_average_stats = False
-
     stats = calc_average_stats(count)
+
+    state.getting_average_stats = False
 
     return stats
 
 
 def get_races_data(message):
-    print(f"user_states = {user_states}")
     user_id = message.from_user.id
     state = user_states[user_id]
 
@@ -35,11 +34,13 @@ def get_races_data(message):
 
     count = int(message.text)
 
+    races_list = load_race_data_from_json(count)
+    for race in races_list:
+        race_info = race.get_info_as_text()
+        bot.send_message(user_id, race_info)
+
     state.getting_races_data = False
 
-    races_data = load_race_data_from_json(count)
-
-    return races_data
 
 
 def print_average_stats(stats):

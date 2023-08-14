@@ -1,7 +1,7 @@
 import json
 
 from config import RACE_DATA_FILENAME
-from src.classes.race import Race
+from classes.race import Race
 
 
 def get_race_data(state):
@@ -65,4 +65,4 @@ def load_race_data_from_json(count=10):
 
         race_list.append(race)
 
-    return race_list[-count:].reverse()  # возврат последних count гонок
+    return reversed(race_list[-count:])  # возврат последних count гонок

@@ -23,7 +23,6 @@ def handle_messages(message):
     user_id = message.from_user.id
 
     print(f"message.text = {message.text}")
-    print(f"user_states = {user_states}")
 
     if message.text == texts.begin:
         user_states[user_id] = UserState()
@@ -59,7 +58,6 @@ def handle_messages(message):
     elif message.text == texts.get_races_data or message.text == 'stat raw':
         user_states[user_id] = UserState()
         user_states[user_id].getting_races_data = True
-        print(f"user_states = {user_states}")
 
         bot.send_message(user_id, texts.enter_races_count, reply_markup=None)
 
