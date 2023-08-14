@@ -14,6 +14,8 @@ class UserState:
         self.getting_average_stats = False
         self.getting_races_data = False
         self.printing_average_stats = False
+        self.getting_races_stats = False
+        self.mode_full = None
 
     def print_info(self):
         print(f"entering_race_info = {self.entering_race_info}")

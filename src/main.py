@@ -7,7 +7,7 @@ from src.info_collectors.enter_info import enter_team1, enter_team2, enter_overt
 from src.info_collectors.get_info import get_average_stats, get_races_data
 from src.json_tools import save_to_json
 from src.tests.tests import load_race_data_from_json_test
-from validation.checkouts import race_exists
+from validation.checkouts import race_exists, check_count
 
 
 @bot.message_handler(commands=['start'])
@@ -16,6 +16,12 @@ def start_bot(message):
     btn = types.KeyboardButton(texts.begin)
     markup.add(btn)
     bot.send_message(message.from_user.id, texts.greetings, reply_markup=markup)
+
+def rerun(user_id):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    btn = types.KeyboardButton(texts.begin)
+    markup.add(btn)
+    bot.send_message(user_id, texts.rerun_states, reply_markup=markup)
 
 
 @bot.message_handler(content_types=['text'])
@@ -44,8 +50,8 @@ def handle_messages(message):
         user_states[user_id] = UserState()
 
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton(texts.get_average_stats)
-        btn2 = types.KeyboardButton(texts.get_races_data)
+        btn1 = types.KeyboardButton(texts.get_races_data)
+        btn2 = types.KeyboardButton(texts.get_average_stats)
         markup.add(btn1, btn2)
         bot.send_message(user_id, texts.choose_option, reply_markup=markup)
 
@@ -59,7 +65,11 @@ def handle_messages(message):
         user_states[user_id] = UserState()
         user_states[user_id].getting_races_data = True
 
-        bot.send_message(user_id, texts.enter_races_count, reply_markup=None)
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        btn1 = types.KeyboardButton(texts.yes)
+        btn2 = types.KeyboardButton(texts.no)
+        markup.add(btn1, btn2)
+        bot.send_message(user_id, texts.ask_print_laps_info, reply_markup=markup)
 
 
     elif user_id in user_states:
@@ -98,21 +108,29 @@ def handle_messages(message):
 
             save_to_json(state)
 
-            markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-            btn = types.KeyboardButton(texts.begin)
-            markup.add(btn)
-            bot.send_message(user_id, texts.rerun_states, reply_markup=markup)
-
             state.printing_info = False
 
-        elif state.getting_races_data:
-            get_races_data(message)
-
-        elif state.getting_average_stats:
-            get_average_stats(message)
+            rerun(user_id)
 
 
+        elif state.getting_races_stats:
+            pass
 
+        elif state.getting_races_data or state.getting_average_stats:
+            if state.mode_full is None:
+                state.mode_full = (message.text == texts.yes)
+                bot.send_message(user_id, texts.enter_races_count, reply_markup=None)
+            else:
+                if state.getting_average_stats:
+                    get_average_stats(message)
+                elif state.getting_races_data:
+                    get_races_data(message)
+
+                state.getting_average_stats = False
+                state.getting_races_data = False
+                state.mode_full = None
+
+                rerun(user_id)
 
 
 bot.infinity_polling()  # обязательная для работы бота часть

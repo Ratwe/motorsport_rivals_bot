@@ -36,14 +36,8 @@ def get_races_data(message):
 
     races_list = load_race_data_from_json(count)
     for race in races_list:
-        race_info = race.get_info_as_text()
+        race_info = race.get_info_as_text(full=state.mode_full)
         bot.send_message(user_id, race_info)
 
     state.getting_races_data = False
-
-
-
-def print_average_stats(stats):
-    pass
-
 

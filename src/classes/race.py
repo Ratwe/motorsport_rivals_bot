@@ -50,7 +50,7 @@ class Race:
         # Применяем хэш-функцию MD5 для получения уникального id
         self.race_id = hashlib.md5(combined_data.encode()).hexdigest()
 
-    def get_info_as_text(self):
+    def get_info_as_text(self, full=False):
         info = "Информация о гонке:\n\n"
         info += f"race_id = {self.race_id}\n"
         info += f"team1 = {self.team1}\n"
@@ -61,11 +61,12 @@ class Race:
         info += f"overtakes_team2 = {self.overtakes_team2}\n"
         info += f"scores = {self.scores[0]} : {self.scores[1]}\n\n"
 
-        for lap in self.laps:
-            info += f"lap #{lap.number}:\n"
-            info += f"speed_team1 = {lap.speed_team1}\n"
-            info += f"speed_team2 = {lap.speed_team2}\n"
-            info += f"best_lap = {lap.best_lap}\n\n"
+        if full:
+            for lap in self.laps:
+                info += f"lap #{lap.number}:\n"
+                info += f"speed_team1 = {lap.speed_team1}\n"
+                info += f"speed_team2 = {lap.speed_team2}\n"
+                info += f"best_lap = {lap.best_lap}\n\n"
 
         return info
 
