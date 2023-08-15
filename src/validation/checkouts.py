@@ -67,7 +67,7 @@ def check_count(num):
     except:
         return CONV_ERR
 
-    if num <= 0:
+    if num < 0:
         return RACES_NUM_ERR
 
     return EXIT_SUCCESS

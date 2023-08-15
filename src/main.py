@@ -3,9 +3,9 @@ from telebot import types
 import texts
 from classes.user_state import UserState
 from globals import bot, user_states
-from src.info_collectors.enter_info import enter_team1, enter_team2, enter_overtakes1, enter_overtakes2, enter_laps
-from src.info_collectors.get_info import get_average_race, get_races_data
-from src.json_tools import save_to_json
+from info_collectors.enter_info import enter_team1, enter_team2, enter_overtakes1, enter_overtakes2, enter_laps
+from info_collectors.get_info import get_average_race, get_races_data
+from json_tools import save_to_json
 from validation.checkouts import race_exists
 
 
@@ -106,14 +106,11 @@ def handle_messages(message):
             if message.text == texts.yes:
                 race_info = state.race.get_info_as_text()
                 bot.send_message(user_id, race_info)
-
-            print(state.race.get_info_as_text())
-
-            save_to_json(state)
-
-            state.printing_info = False
-
-            rerun(user_id)
+            elif message.text == texts.no:
+                print(state.race.get_info_as_text())
+                save_to_json(state)
+                state.printing_info = False
+                rerun(user_id)
 
         elif state.getting_races_data or state.getting_average_race:
             if state.mode_full is None:

@@ -1,9 +1,9 @@
 from telebot import types
 
 import texts
-from src.globals import user_states, bot
-from src.validation.checkouts import check_overtakes, check_values
-from src.validation.errors import get_err_code_message, LAST_LAP
+from globals import user_states, bot
+from validation.checkouts import check_overtakes, check_values
+from validation.errors import get_err_code_message, LAST_LAP
 
 
 def enter_team1(message):
@@ -29,7 +29,9 @@ def enter_team2(message):
 
 
 def enter_overtakes1(message):
-    if check_overtakes(message.text):
+    err_code = check_overtakes(message.text)
+    if err_code:
+        bot.send_message(message.from_user.id, get_err_code_message(err_code))
         return
 
     user_id = message.from_user.id

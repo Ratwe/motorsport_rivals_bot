@@ -17,6 +17,10 @@ def get_average_race(message):
     count = int(message.text)
 
     races_list = load_race_data_from_json(count)
+
+    if len(races_list) != count:
+        bot.send_message(user_id, f"В статистике учитывалось {len(races_list)} гонок.")
+
     avg_race = calc_average_race(races_list)
 
     avg_race_info = avg_race.get_info_as_text(full=state.mode_full)
