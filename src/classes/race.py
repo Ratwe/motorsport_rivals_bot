@@ -52,9 +52,14 @@ class Race:
 
     def get_info_as_text(self, full=False):
         info = "Информация о гонке:\n\n"
-        info += f"race_id = {self.race_id}\n"
-        info += f"team1 = {self.team1}\n"
-        info += f"team2 = {self.team2}\n"
+
+        if self.race_id is not None:
+            info += f"race_id = {self.race_id}\n"
+        if self.team1 is not None:
+            info += f"team1 = {self.team1}\n"
+        if self.team2 is not None:
+            info += f"team2 = {self.team2}\n"
+
         info += f"speed_team1 = {self.speed_team1}\n"
         info += f"speed_team2 = {self.speed_team2}\n"
         info += f"overtakes_team1 = {self.overtakes_team1}\n"

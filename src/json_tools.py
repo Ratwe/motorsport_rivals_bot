@@ -65,4 +65,4 @@ def load_race_data_from_json(count=10):
 
         race_list.append(race)
 
-    return reversed(race_list[-count:])  # возврат последних count гонок
+    return list(reversed(race_list[-count:]))  # возврат последних count гонок
